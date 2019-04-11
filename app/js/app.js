@@ -23,6 +23,8 @@ import AlertStore from './stores/AlertStore';
 
 import {getCountry} from './actions/UserActions';
 
+import { Navbar } from 'react-bootstrap';
+
 let getAppState = () => {
   return {
     text: SearchStore.getSearch(),
