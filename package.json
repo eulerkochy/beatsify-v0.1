@@ -30,7 +30,7 @@
     "react-addons-css-transition-group": "0.14.0",
     "react-autosuggest": "^2.1.1",
     "react-dom": "0.14.0",
-    "spotify-sdk": "0.0.28",
+    "spotify-sdk": "1.0.0-beta2",
     "react-bootstrap": "1.0.0-beta.6"
   },
   "scripts": {

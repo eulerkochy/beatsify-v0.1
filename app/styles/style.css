@@ -6,7 +6,7 @@ body {
   padding: 0px;
   height: 100%;
   font-family: 'Montserrat', sans-serif;
-  background: #5e04c2;
+  background: #000d1a;
 }
 
 div {
@@ -112,7 +112,7 @@ a {
   padding: 20px 46px 20px 46px;
   border: 0px;
   border-radius: 5px;
-  background: #410287;
+  background: #49395c;
   color: #fff;
   -webkit-transition: 0.2s ease-in-out;
   -moz-transition: 0.2s ease-in-out;
@@ -121,7 +121,7 @@ a {
 }
 
 .search-group .input-search:focus {
-  background: #773CB5;
+  background: #49395c;
 }
 
 .search-group .input-search:focus::-webkit-input-placeholder {
@@ -168,7 +168,7 @@ a {
   width: 100%;
   height: 90px;
   float: left;
-  background: #4f03a5;
+  background: #49395c;
   position: fixed;
   top: 0px;
   left: 0px;
@@ -467,7 +467,7 @@ a {
 
 .radio-container label {
   display: inline-block;
-  background-color: #5e04c2;
+  background-color: #000d1a;
   padding: 7px 0;
   font-family: Arial;
   font-size: 16px;
@@ -475,7 +475,7 @@ a {
   margin: 10px 0;
   height: 17px;
   text-indent: 40px;
-  color: #5e04c2;
+  color: #000d1a;
   border-radius: 5px;
   float: left;
   clear: both;
@@ -918,7 +918,7 @@ a {
   white-space: normal;
   border-radius: 3px;
   background-color: #fff;
-  color: #5e04c2;
+  color: #000d1a;
 }
 
 .tooltip.center:after {

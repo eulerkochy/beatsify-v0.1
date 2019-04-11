@@ -23,8 +23,6 @@ import AlertStore from './stores/AlertStore';
 
 import {getCountry} from './actions/UserActions';
 
-import { Navbar } from 'react-bootstrap';
-
 let getAppState = () => {
   return {
     text: SearchStore.getSearch(),
@@ -71,6 +69,7 @@ class App extends Component {
   }
 
   render() {
+    console.log(UserStore.getUser());
     return <div className='container'>
               <ReactCSSTransitionGroup transitionName='fade'>
               { this.state.searching ? this.renderTop() : null }

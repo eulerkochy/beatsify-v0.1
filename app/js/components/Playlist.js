@@ -40,6 +40,7 @@ class Playlist extends Component {
                 country={this.props.country}
               />;
     });
+    console.log(this.props.mainTrack);
     return <div className='playlist'>
               <div className='info'>
                 { !this.props.tracks.length ?
