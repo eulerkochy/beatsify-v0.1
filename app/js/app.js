@@ -69,6 +69,7 @@ class App extends Component {
   }
 
   render() {
+    console.log(UserStore.getUser());
     return <div className='container'>
               <ReactCSSTransitionGroup transitionName='fade'>
               { this.state.searching ? this.renderTop() : null }

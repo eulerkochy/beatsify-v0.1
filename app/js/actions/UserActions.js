@@ -21,6 +21,7 @@ let UserActions = {
             data: data
           });
           resolve();
+          console.log(data._display_name);
         });
       });
     });
