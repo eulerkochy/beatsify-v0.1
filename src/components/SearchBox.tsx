@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, Music } from 'lucide-react';
 import { useQuery } from 'react-query';
@@ -17,7 +17,7 @@ const SearchBox = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const { setSearchQuery, setIsSearching, setMainTrack, setTracks, setIsLoading } = useAppStore();
+  const { setMainTrack, setTracks, setIsLoading } = useAppStore();
 
   // Search query
   const { data: searchResults, isLoading: isSearching } = useQuery(
@@ -28,6 +28,28 @@ const SearchBox = () => {
       staleTime: 5 * 60 * 1000, // 5 minutes
     }
   );
+
+  const handleTrackSelect = useCallback(async (track: Track) => {
+    setIsLoading(true);
+    setIsOpen(false);
+    setQuery(track.name);
+    
+    try {
+      // First, verify the track exists by getting its details
+      await SpotifyService.getTrack(track.id);
+      
+      // Get recommendations based on the selected track
+      const recommendations = await SpotifyService.getRecommendations([track.id], 20);
+      
+      setMainTrack(track);
+      setTracks(recommendations);
+    } catch (error) {
+      console.error('Error getting recommendations:', error);
+      alert('Unable to get recommendations for this track. Please try a different song.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [setIsLoading, setMainTrack, setTracks]);
 
   // Handle search results
   useEffect(() => {
@@ -70,7 +92,7 @@ const SearchBox = () => {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, searchResults, selectedIndex]);
+  }, [isOpen, searchResults, selectedIndex, handleTrackSelect]);
 
   // Handle click outside
   useEffect(() => {
@@ -87,33 +109,6 @@ const SearchBox = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  const handleTrackSelect = async (track: Track) => {
-    setIsLoading(true);
-    setIsOpen(false);
-    setQuery(track.name);
-    
-    // First, verify the track exists by getting its details
-    try {
-      const trackDetails = await SpotifyService.getTrack(track.id);
-    } catch (trackError) {
-      console.error('Track not found or unavailable:', trackError);
-      alert('This track is not available for recommendations. Please try a different track.');
-      return;
-    }
-    
-    // Get recommendations based on the selected track
-    const recommendations = await SpotifyService.getRecommendations([track.id], 20);
-    
-    setMainTrack(track);
-    setTracks(recommendations);
-  } catch (error) {
-    console.error('Error getting recommendations:', error);
-    alert('Unable to get recommendations for this track. Please try a different song.');
-  } finally {
-    setIsLoading(false);
-  }
-};
 
   const handleClear = () => {
     setQuery('');

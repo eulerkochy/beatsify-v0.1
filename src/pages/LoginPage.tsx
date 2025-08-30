@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Navigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { SpotifyService } from '@/services/spotify';
 import { useAppStore } from '@/store/useAppStore';
 import { Button } from '@/components/ui/button';

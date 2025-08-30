@@ -268,7 +268,7 @@ export class SpotifyService {
 
       return uniqueRecommendations;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error getting recommendations:', error);
       throw error;
     }

@@ -21,17 +21,17 @@ const HomePage = () => {
     resetSearch,
   } = useAppStore();
 
-  // Redirect to login if not authenticated
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
   // Reset search when component unmounts
   useEffect(() => {
     return () => {
       resetSearch();
     };
   }, [resetSearch]);
+
+  // Redirect to login if not authenticated
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <div className="min-h-screen">
