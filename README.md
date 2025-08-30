@@ -1,32 +1,35 @@
-# Beatsify - Your Music Buddy 🎵
+# Beatsify - Your Music Buddy
 
-A modern React application that creates personalized Spotify playlists based on your favorite songs. Built with the latest web technologies and best practices.
+A modern React application that helps you discover and create amazing playlists using Spotify's API and AI-powered recommendations.
 
-## ✨ Features
+## Features
 
-- **Smart Playlist Generation**: Create playlists based on any song you love
-- **Spotify Integration**: Seamless authentication and playlist creation
-- **Modern UI**: Beautiful, responsive design with smooth animations
-- **Real-time Search**: Instant search with autocomplete functionality
-- **Type Safety**: Full TypeScript support for better development experience
-- **Modern Stack**: Built with React 18, Vite, and shadcn/ui components
+- 🎵 **Spotify Integration**: Seamless login and playlist creation
+- 🔍 **Smart Search**: Find songs with autocomplete and keyboard navigation
+- 🎯 **AI Recommendations**: Get personalized track recommendations
+- 📱 **Modern UI**: Beautiful, responsive design with animations
+- ⚡ **Fast Performance**: Built with Vite and optimized for speed
 
-## 🚀 Tech Stack
+## Tech Stack
 
-- **Frontend**: React 18 with TypeScript
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS with shadcn/ui components
+- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, Framer Motion
+- **Backend**: Express.js, Node.js
 - **State Management**: Zustand
-- **Data Fetching**: React Query
-- **Animations**: Framer Motion
-- **Icons**: Lucide React
 - **API**: Spotify Web API
+- **Deployment**: Railway (full-stack)
 
-## 📦 Installation
+## Quick Start
+
+### Prerequisites
+- Node.js 18+ 
+- Spotify Developer Account
+- Railway account (for deployment)
+
+### Local Development
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone <your-repo-url>
    cd beatsify-v0.1
    ```
 
@@ -36,122 +39,124 @@ A modern React application that creates personalized Spotify playlists based on 
    ```
 
 3. **Set up environment variables**
-   Create a `.env` file in the root directory:
-   ```env
-   VITE_SPOTIFY_CLIENT_ID=your_spotify_client_id
-   VITE_REDIRECT_URI=http://localhost:3000/callback
-   ```
-
-4. **Start the development server**
    ```bash
-   npm run dev
+   cp env.example .env
+   # Edit .env with your Spotify API credentials
    ```
 
-5. **Open your browser**
-   Navigate to `http://localhost:3000`
+4. **Start development server**
+   ```bash
+   npm run dev:all
+   ```
 
-## 🔧 Development
+5. **Visit the app**
+   - Frontend: http://localhost:3000
+   - Backend: http://localhost:3001
 
-### Available Scripts
+## Deployment
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
+### Railway Deployment (Recommended)
+
+Railway is perfect for deploying both frontend and backend as a single service.
+
+1. **Install Railway CLI**
+   ```bash
+   npm i -g @railway/cli
+   ```
+
+2. **Login to Railway**
+   ```bash
+   railway login
+   ```
+
+3. **Deploy**
+   ```bash
+   railway init
+   railway up
+   ```
+
+4. **Set environment variables** in Railway dashboard:
+   - `SPOTIFY_CLIENT_SECRET`
+   - `VITE_SPOTIFY_CLIENT_ID`
+   - `VITE_REDIRECT_URI`
+
+5. **Update Spotify redirect URIs** in your Spotify Developer Dashboard
+
+### Alternative Deployments
+
+- **Vercel + Railway**: Frontend on Vercel, backend on Railway
+- **Render**: Full-stack deployment
+- **Heroku**: Traditional full-stack deployment
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions.
+
+## Spotify API Setup
+
+1. Go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+2. Create a new app
+3. Add redirect URIs:
+   - Development: `http://localhost:3000/callback`
+   - Production: `https://your-domain.com/callback`
+4. Copy Client ID and Client Secret
+
+## Environment Variables
+
+```env
+# Spotify API Configuration
+VITE_SPOTIFY_CLIENT_ID=your_spotify_client_id
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+VITE_REDIRECT_URI=http://localhost:3000/callback
+
+# Production
+VITE_REDIRECT_URI=https://your-domain.com/callback
+```
+
+## Available Scripts
+
+- `npm run dev` - Start frontend development server
+- `npm run dev:server` - Start backend development server
+- `npm run dev:all` - Start both frontend and backend
+- `npm run build` - Build frontend for production
+- `npm run build:full` - Build both frontend and backend
+- `npm start` - Start production server
 - `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint errors
-- `npm run format` - Format code with Prettier
-- `npm run test` - Run tests
-- `npm run type-check` - Check TypeScript types
+- `npm run type-check` - Run TypeScript type checking
 
-### Project Structure
+## Project Structure
 
 ```
-src/
-├── components/          # React components
-│   ├── ui/             # shadcn/ui components
-│   └── ...             # Custom components
-├── hooks/              # Custom React hooks
-├── lib/                # Utility functions
-├── pages/              # Page components
-├── services/           # API services
-├── store/              # Zustand store
-├── types/              # TypeScript type definitions
-├── App.tsx             # Main app component
-├── main.tsx            # App entry point
-└── index.css           # Global styles
+beatsify-v0.1/
+├── src/                    # Frontend source code
+│   ├── components/         # React components
+│   ├── pages/             # Page components
+│   ├── services/          # API services
+│   ├── store/             # State management
+│   └── types/             # TypeScript types
+├── backend/               # Backend files
+├── server.js              # Express server
+├── dist/                  # Built frontend files
+└── package.json           # Dependencies and scripts
 ```
 
-### Key Components
-
-- **SearchBox**: Smart search with autocomplete
-- **Playlist**: Display and manage playlists
-- **LoginPage**: Spotify authentication
-- **HomePage**: Main application interface
-
-## 🎨 Design System
-
-The app uses shadcn/ui components with a custom design system:
-
-- **Colors**: Spotify-inspired color palette
-- **Typography**: Inter font family
-- **Spacing**: Consistent spacing scale
-- **Animations**: Smooth transitions and micro-interactions
-
-## 🔐 Spotify API Setup
-
-1. **Create a Spotify App**
-   - Go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
-   - Create a new app
-   - Get your Client ID
-
-2. **Configure Redirect URIs**
-   - Add `http://localhost:3000/callback` to your app's redirect URIs
-   - For production, add your domain's callback URL
-
-3. **Set Environment Variables**
-   - Add your Client ID to the `.env` file
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-1. **Connect your repository** to Vercel
-2. **Set environment variables** in Vercel dashboard
-3. **Deploy** - Vercel will automatically build and deploy your app
-
-### Other Platforms
-
-The app can be deployed to any platform that supports Node.js:
-
-- Netlify
-- Railway
-- Heroku
-- AWS Amplify
-
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Run tests and linting
+5. Submit a pull request
 
-## 📝 License
+## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) for details.
 
-## 🙏 Acknowledgments
+## Support
 
-- [Spotify Web API](https://developer.spotify.com/documentation/web-api/)
-- [shadcn/ui](https://ui.shadcn.com/) for beautiful components
-- [Vite](https://vitejs.dev/) for fast development
-- [Tailwind CSS](https://tailwindcss.com/) for styling
-- [Framer Motion](https://www.framer.com/motion/) for animations
-
-## 🐛 Issues
-
-If you encounter any issues, please [open an issue](https://github.com/your-username/beatsify/issues) on GitHub.
+If you encounter any issues:
+1. Check the [troubleshooting guide](./DEPLOYMENT.md#troubleshooting)
+2. Review the [deployment documentation](./DEPLOYMENT.md)
+3. Open an issue on GitHub
 
 ---
 
-Made with ❤️ by [Your Name]
+Built with ❤️ using React, TypeScript, and Spotify API

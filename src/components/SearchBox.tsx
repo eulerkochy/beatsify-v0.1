@@ -17,7 +17,7 @@ const SearchBox = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const { setMainTrack, setTracks, setIsLoading } = useAppStore();
+  const { setMainTrack, setTracks, setIsLoading, setIsSearching, setSearchQuery } = useAppStore();
 
   // Search query
   const { data: searchResults, isLoading: isSearching } = useQuery(
@@ -31,8 +31,10 @@ const SearchBox = () => {
 
   const handleTrackSelect = useCallback(async (track: Track) => {
     setIsLoading(true);
+    setIsSearching(true);
     setIsOpen(false);
     setQuery(track.name);
+    setSearchQuery(track.name);
     
     try {
       // First, verify the track exists by getting its details
@@ -49,7 +51,7 @@ const SearchBox = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [setIsLoading, setMainTrack, setTracks]);
+  }, [setIsLoading, setIsSearching, setSearchQuery, setMainTrack, setTracks]);
 
   // Handle search results
   useEffect(() => {
@@ -112,6 +114,7 @@ const SearchBox = () => {
 
   const handleClear = () => {
     setQuery('');
+    setSearchQuery('');
     setIsOpen(false);
     setSelectedIndex(-1);
     inputRef.current?.focus();

@@ -7,7 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ExternalLink, Music } from 'lucide-react';
 
 const SPOTIFY_CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-const REDIRECT_URI = 'http://localhost:3000/callback';
+const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI || 'http://localhost:3000/callback';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 const LoginPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -23,7 +24,7 @@ const LoginPage: React.FC = () => {
       
       const exchangeCodeForToken = async () => {
         try {
-          const response = await fetch('http://localhost:3001/api/auth/spotify/callback', {
+          const response = await fetch(`${API_URL}/api/auth/spotify/callback`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

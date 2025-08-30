@@ -120,7 +120,7 @@ export class SpotifyService {
             recommendations.push(...artistTracks);
             artistTracks.forEach((t: Track) => processedTracks.add(t.id));
           } catch (artistError) {
-            // Silent fail - continue with other strategies
+            console.warn('Artist search failed:', artistError);
           }
 
           // Strategy 2: Search for tracks with similar characteristics
@@ -142,98 +142,78 @@ export class SpotifyService {
             recommendations.push(...similarTracks);
             similarTracks.forEach((t: Track) => processedTracks.add(t.id));
           } catch (similarError) {
-            // Silent fail - continue with other strategies
+            console.warn('Similar tracks search failed:', similarError);
           }
 
-          // Strategy 3: Search by genre if available
-          if (mainArtist.genres && mainArtist.genres.length > 0) {
-            try {
-              const genreQuery = mainArtist.genres.slice(0, 2).join(' OR ');
-              const genreResponse = await spotifyApi.get('/search', {
-                params: {
-                  q: `genre:${genreQuery}`,
-                  type: 'track',
-                  limit: 10,
-                  market: 'from_token'
-                }
-              });
-              
-              const genreTracks = genreResponse.data.tracks.items
-                .filter((t: Track) => !processedTracks.has(t.id))
-                .slice(0, 3);
-              
-              recommendations.push(...genreTracks);
-              genreTracks.forEach((t: Track) => processedTracks.add(t.id));
-            } catch (genreError) {
-              // Silent fail - continue with other strategies
-            }
-          }
-
-          // Strategy 4: Search for popular tracks from similar era
+          // Strategy 3: Search for tracks by the same artist but different albums
           try {
-            const eraResponse = await spotifyApi.get('/search', {
+            const albumTracksResponse = await spotifyApi.get('/search', {
               params: {
-                q: 'year:2015-2024',
+                q: `artist:"${mainArtist.name}" album:${seedTrack.album.name}`,
                 type: 'track',
                 limit: 10,
                 market: 'from_token'
               }
             });
             
-            const eraTracks = eraResponse.data.tracks.items
+            const albumTracks = albumTracksResponse.data.tracks.items
               .filter((t: Track) => !processedTracks.has(t.id))
               .slice(0, 3);
             
-            recommendations.push(...eraTracks);
-            eraTracks.forEach((t: Track) => processedTracks.add(t.id));
-          } catch (eraError) {
-            // Silent fail - continue with other strategies
+            recommendations.push(...albumTracks);
+            albumTracks.forEach((t: Track) => processedTracks.add(t.id));
+          } catch (albumError) {
+            console.warn('Album tracks search failed:', albumError);
           }
 
-          // Strategy 5: Search for trending/undiscovered tracks
+          // Strategy 4: Search for popular tracks by the artist
           try {
-            const trendingResponse = await spotifyApi.get('/search', {
+            const popularResponse = await spotifyApi.get('/search', {
               params: {
-                q: 'tag:hipster',
+                q: `artist:"${mainArtist.name}"`,
                 type: 'track',
-                limit: 8,
+                limit: 10,
                 market: 'from_token'
               }
             });
             
-            const trendingTracks = trendingResponse.data.tracks.items
+            const popularTracks = popularResponse.data.tracks.items
               .filter((t: Track) => !processedTracks.has(t.id))
-              .slice(0, 2);
+              .slice(0, 3);
             
-            recommendations.push(...trendingTracks);
-            trendingTracks.forEach((t: Track) => processedTracks.add(t.id));
-          } catch (trendingError) {
-            // Silent fail - continue with other strategies
+            recommendations.push(...popularTracks);
+            popularTracks.forEach((t: Track) => processedTracks.add(t.id));
+          } catch (popularError) {
+            console.warn('Popular tracks search failed:', popularError);
           }
 
-          // Strategy 6: Search for classic tracks
+          // Strategy 5: Search for tracks with similar names
           try {
-            const classicResponse = await spotifyApi.get('/search', {
-              params: {
-                q: 'year:1990-2010',
-                type: 'track',
-                limit: 8,
-                market: 'from_token'
-              }
-            });
-            
-            const classicTracks = classicResponse.data.tracks.items
-              .filter((t: Track) => !processedTracks.has(t.id))
-              .slice(0, 2);
-            
-            recommendations.push(...classicTracks);
-            classicTracks.forEach((t: Track) => processedTracks.add(t.id));
-          } catch (classicError) {
-            // Silent fail - continue with other strategies
+            const words = seedTrack.name.split(' ').filter(word => word.length > 2);
+            if (words.length > 0) {
+              const keyword = words[Math.floor(Math.random() * words.length)];
+              const keywordResponse = await spotifyApi.get('/search', {
+                params: {
+                  q: keyword,
+                  type: 'track',
+                  limit: 8,
+                  market: 'from_token'
+                }
+              });
+              
+              const keywordTracks = keywordResponse.data.tracks.items
+                .filter((t: Track) => !processedTracks.has(t.id))
+                .slice(0, 2);
+              
+              recommendations.push(...keywordTracks);
+              keywordTracks.forEach((t: Track) => processedTracks.add(t.id));
+            }
+          } catch (keywordError) {
+            console.warn('Keyword search failed:', keywordError);
           }
 
         } catch (trackError) {
-          // Silent fail - continue with other seed tracks
+          console.warn('Track processing failed:', trackError);
         }
       }
 
@@ -242,7 +222,7 @@ export class SpotifyService {
         try {
           const diverseResponse = await spotifyApi.get('/search', {
             params: {
-              q: 'popularity:50-100',
+              q: 'top hits',
               type: 'track',
               limit: limit - recommendations.length + 5,
               market: 'from_token'
@@ -255,7 +235,7 @@ export class SpotifyService {
           
           recommendations.push(...diverseTracks);
         } catch (diverseError) {
-          // Silent fail - return what we have
+          console.warn('Diverse tracks search failed:', diverseError);
         }
       }
 
@@ -266,7 +246,29 @@ export class SpotifyService {
         )
         .slice(0, limit);
 
-      return uniqueRecommendations;
+      // If we still don't have enough recommendations, try a fallback approach
+      if (uniqueRecommendations.length < 5) {
+        try {
+          const fallbackResponse = await spotifyApi.get('/search', {
+            params: {
+              q: 'popular',
+              type: 'track',
+              limit: 20,
+              market: 'from_token'
+            }
+          });
+          
+          const fallbackTracks = fallbackResponse.data.tracks.items
+            .filter((t: Track) => !processedTracks.has(t.id))
+            .slice(0, 10);
+          
+          uniqueRecommendations.push(...fallbackTracks);
+        } catch (fallbackError) {
+          console.warn('Fallback search failed:', fallbackError);
+        }
+      }
+      
+      return uniqueRecommendations.slice(0, limit);
 
     } catch (error: unknown) {
       console.error('Error getting recommendations:', error);
